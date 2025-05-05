@@ -5,7 +5,7 @@ CREATE TABLE payments (
     cardNumber VARCHAR(100),
     cvv VARCHAR(3),
     amount NUMERIC(100, 2),
-    expiredAt TIMESTAMP,
+    expireddate TIMESTAMP,
     statusPayment VARCHAR(100),
-    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    createdate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

@@ -24,7 +24,7 @@ public class Payments {
         payment.setCardnumber(paymentProcessPayload.cardNumber());
         payment.setCvv(paymentProcessPayload.cvv());
         payment.setAmount(paymentProcessPayload.amount());
-        payment.setExpiredat(paymentProcessPayload.expiredAt().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+        payment.setExpireddate(paymentProcessPayload.expiredAt().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         Payment p = paymentService.save(payment);
 
 

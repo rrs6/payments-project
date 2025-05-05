@@ -32,15 +32,24 @@ public class Payment {
 
     private Float amount;
 
-    private LocalDateTime expiredat;
+    private LocalDateTime expireddate;
 
-    private LocalDateTime createdat;
+    private LocalDateTime createdate;
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus statuspayment;
 
     public Payment() {
-        this.createdat = LocalDateTime.now();
+        this.createdate = LocalDateTime.now();
         this.statuspayment = PaymentStatus.PENDING;
+    }
+
+    public String getExpiredate() {
+        System.err.println(this.expireddate.toString());
+        return this.expireddate.toString();
+    }
+
+    public String getCreatedate() {
+        return this.createdate.toString();
     }
 }
