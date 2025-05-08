@@ -1,0 +1,18 @@
+FROM maven:3-eclipse-temurin-24 AS build
+
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+FROM eclipse-temurin:24-jre AS runtime
+
+# Define o diretório de trabalho dentro do contêiner
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+
+# Expõe a porta usada pela aplicação (ajuste conforme necessário)
+EXPOSE 8080
+
+# Comando para rodar o JAR
+ENTRYPOINT ["java", "-jar", "app.jar"]

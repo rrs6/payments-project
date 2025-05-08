@@ -15,7 +15,7 @@ public class CreatePaymentProcess {
 
     @Autowired
     private SqsTemplate sqsTemplate;
-    private final String SQS_url = "https://localhost.localstack.cloud:4566/000000000000/payment-process";
+    private final String SQS_url = "https://localstack:4566/000000000000/payment-process";
 
     public void setPayload(PaymentRecord payment) {
         this.payment = payment;
