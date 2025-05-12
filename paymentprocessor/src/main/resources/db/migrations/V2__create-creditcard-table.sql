@@ -1,12 +1,11 @@
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
-CREATE TABLE "process-payment" (
+CREATE TABLE creditcard (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    paymentid VARCHAR(200),
-    cardnumber VARCHAR(100),
+    cardnumber VARCHAR(200),
     cvv VARCHAR(3),
-    amount NUMERIC(100, 2),
     expireddate TIMESTAMP,
-    statuspayment VARCHAR(100),
+    totallimit NUMERIC(100, 2),
+    actuallimit NUMERIC(100, 2),
     createdate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
