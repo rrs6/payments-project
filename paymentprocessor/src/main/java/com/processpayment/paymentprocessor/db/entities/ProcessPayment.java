@@ -20,13 +20,15 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @Entity
-@Table(name = "process_payment")
+@Table(name = "process-payment")
 public class ProcessPayment {
     @Id
     @GeneratedValue(strategy=GenerationType.UUID)
     private UUID id;
 
     private String paymentid;
+
+    private Float amount;
 
     private String cardnumber;
 
@@ -37,7 +39,11 @@ public class ProcessPayment {
     private LocalDateTime createdate;
 
     @Enumerated(EnumType.STRING)
-    private PaymentStatus paymentStatus;
+    private PaymentStatus statuspayment;
+
+    public ProcessPayment() {
+        this.createdate = LocalDateTime.now();
+    }
 
     public String getExpiredate() {
         System.err.println(this.expireddate.toString());
