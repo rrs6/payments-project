@@ -4,20 +4,37 @@ services:
     build:
       context: ./transaction-validator
       dockerfile: dockerfile
+    env_file:
+      - /.env
+    environment:
+      - JDBC_PAYMENT_DATASOURCE_URL=${JDBC_PAYMENT_DATASOURCE_URL}
+      - AWS_CREDENTIALS_ACCESS_KEY=${AWS_CREDENTIALS_ACCESS_KEY}
+      - AWS_CREDENTIALS_SECRET_KEY=${AWS_CREDENTIALS_SECRET_KEY}
+      - AWS_SQS_URL2=${AWS_SQS_URL2}
+      - JDBC_PAYMENT_PASSWORD=${JDBC_PAYMENT_PASSWORD}
+      - JDBC_PAYMENT_USER=${JDBC_PAYMENT_USER} 
     ports:
       - "8080:8080"
     depends_on:
       - db
-      - localstack
 
   consumer:
     build:
       context: ./paymentprocessor
       dockerfile: dockerfile
+    env_file:
+      - /.env
+    environment:
+      - JDBC_VALIDATOR_DATASOURCE_URL=${JDBC_VALIDATOR_DATASOURCE_URL}
+      - AWS_CREDENTIALS_ACCESS_KEY=${AWS_CREDENTIALS_ACCESS_KEY}
+      - AWS_CREDENTIALS_SECRET_KEY=${AWS_CREDENTIALS_SECRET_KEY}
+      - AWS_SQS_URL1=${AWS_SQS_URL1}
+      - JDBC_VALIDATOR_PASSWORD=${JDBC_VALIDATOR_PASSWORD}
+      - JDBC_VALIDATOR_USER=${JDBC_VALIDATOR_USER} 
     ports:
       - "8081:8080"
     depends_on:
-      - localstack
+      - db_consumer
 
   db:
     image: postgres:17
@@ -28,7 +45,7 @@ services:
       POSTGRES_PASSWORD: mypassword
       POSTGRES_DB: transaction-validator-db
     ports:
-      - "5433:5432"
+      - "5435:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -37,30 +54,14 @@ services:
     container_name: paymentprocessor
     restart: always
     environment:
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
-      POSTGRES_DB: payment-processor-db
+      POSTGRES_USER: ${JDBC_PAYMENT_USER}
+      POSTGRES_PASSWORD: ${JDBC_PAYMENT_PASSWORD}
+      POSTGRES_DB: ${JDBC_PAYMENT_DB}
     ports:
-      - "5433:5432"
+      - "5434:5432"
     volumes:
       - paymentprocessor_data:/var/lib/postgresql/data
 
-  localstack:
-    image: localstack/localstack:latest
-    container_name: localstack
-    ports:
-      - "4566:4566"   # Porta unificada para todos os serviços AWS
-      - "4571:4571"   # Porta para a UI (opcional, depende da versão)
-    environment:
-      - SERVICES=sqs
-      - DEBUG=1
-      - EDGE_PORT=4566
-      - AWS_ACCESS_KEY_ID=test
-      - AWS_SECRET_ACCESS_KEY=test
-    volumes:
-      - localstack_data:/var/lib/localstack
-      - /var/run/docker.sock:/var/run/docker.sock  # necessário para algumas funções do LocalStack
 volumes:
   postgres_data:
-  localstack_data:
   paymentprocessor_data:
