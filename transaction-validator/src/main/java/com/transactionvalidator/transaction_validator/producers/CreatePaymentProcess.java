@@ -1,34 +1,29 @@
 package com.transactionvalidator.transaction_validator.producers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.transactionvalidator.transaction_validator.dtos.PaymentRecord;
+import com.transactionvalidator.transaction_validator.dtos.PaymentProcessingRecord;
 
 import io.awspring.cloud.sqs.operations.SqsTemplate;
 
 @Component
 public class CreatePaymentProcess {
-    private PaymentRecord payment;
+    private final SqsTemplate sqsTemplate;
+    @Value("${aws.sqs.url}")
+    private String sqsUrl;
+    private final ObjectMapper mapper;
 
-    @Autowired
-    private SqsTemplate sqsTemplate;
-    private final String SQS_url = "https://localstack:4566/000000000000/payment-process";
 
-    public void setPayload(PaymentRecord payment) {
-        this.payment = payment;
+    public CreatePaymentProcess(SqsTemplate sqsTemplate) {
+        this.sqsTemplate = sqsTemplate;
+        this.mapper = new ObjectMapper();
     }
 
-    public void sendPaymentProcess() throws JsonProcessingException {
-        if (payment != null){
-            ObjectMapper mapper = new ObjectMapper();
-            String json = mapper.writeValueAsString(payment);
-            sqsTemplate.send(SQS_url, json);
-        } else {
-            System.out.println("No payment to process.");
-        }
-        
+    public void sendPaymentProcess(PaymentProcessingRecord payment) throws JsonProcessingException {
+        String body = mapper.writeValueAsString(payment);
+        sqsTemplate.send(this.sqsUrl, body);
     }
 }
