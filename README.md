@@ -8,3 +8,4 @@ A simple project that contains two microservices that validate a payment transac
     At the end of processing, if the result is APPROVED or REJECTED, the second microservice will publish a message to a response topic, which will be consumed by the first microservice to update the payment status in its database.
 
 Simple Architecture
+![Captura de tela 2025-05-11 231343](https://github.com/user-attachments/assets/dd2dafd9-3c51-44d5-8fc9-c77b0bf0d66e)
