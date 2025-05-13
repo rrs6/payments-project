@@ -61,8 +61,8 @@ public class PaymentProcessorService {
             processPaymentRepository.save(payment);
             return new PaymentStatusProcessed(paymentid, PaymentStatus.APPROVED.toString());
         }
-        payment.setStatuspayment(PaymentStatus.REJECTED);
+        payment.setStatuspayment(PaymentStatus.FAILED);
         processPaymentRepository.save(payment);
-        return new PaymentStatusProcessed(paymentid, PaymentStatus.REJECTED.toString());
+        return new PaymentStatusProcessed(paymentid, PaymentStatus.FAILED.toString());
     }
 }
