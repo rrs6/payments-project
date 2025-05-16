@@ -13,6 +13,7 @@ services:
       - AWS_SQS_URL2=${AWS_SQS_URL2}
       - JDBC_PAYMENT_PASSWORD=${JDBC_PAYMENT_PASSWORD}
       - JDBC_PAYMENT_USER=${JDBC_PAYMENT_USER} 
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
     ports:
       - "8080:8080"
     depends_on:
