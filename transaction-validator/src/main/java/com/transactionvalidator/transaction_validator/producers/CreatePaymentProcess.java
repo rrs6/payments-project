@@ -1,28 +1,27 @@
 package com.transactionvalidator.transaction_validator.producers;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.transactionvalidator.transaction_validator.dtos.PaymentProcessingRecord;
-import com.transactionvalidator.transaction_validator.utils.mapper.WriteClassAsString;
-
-import io.awspring.cloud.sqs.operations.SqsTemplate;
 
 @Component
 public class CreatePaymentProcess {
-    private final SqsTemplate sqsTemplate;
-    private final WriteClassAsString mapper;
-    @Value("${aws.sqs.url}")
-    private String sqsUrl;
+    private final RabbitTemplate rabbitTemplate;
 
-    public CreatePaymentProcess(SqsTemplate sqsTemplate, WriteClassAsString mapper) {
-        this.sqsTemplate = sqsTemplate;
-        this.mapper = mapper;
+    @Value("${rabbitmq.producer.routingkey}")
+    private String routingKey;
+
+    @Value("${rabbitmq.producer.exchangename}")
+    private String exchangeName;
+
+    public CreatePaymentProcess(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     public void sendPaymentProcess(PaymentProcessingRecord payment) throws JsonProcessingException {
-        String body = mapper.write(payment);
-        sqsTemplate.send(this.sqsUrl, body);
+        rabbitTemplate.convertAndSend(exchangeName, routingKey, payment);
     }
 }
