@@ -1,5 +1,17 @@
 services:
 
+  queue:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    env_file:
+      - /.env
   api:
     build:
       context: ./transaction-validator
@@ -66,3 +78,4 @@ services:
 volumes:
   postgres_data:
   paymentprocessor_data:
+  rabbitmq_data:
