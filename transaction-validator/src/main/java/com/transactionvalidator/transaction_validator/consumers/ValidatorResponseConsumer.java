@@ -1,11 +1,10 @@
 package com.transactionvalidator.transaction_validator.consumers;
 
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 import com.transactionvalidator.transaction_validator.dtos.ValidatorResponse;
 import com.transactionvalidator.transaction_validator.services.PaymentService;
-
-import io.awspring.cloud.sqs.annotation.SqsListener;
 
 @Component
 public class ValidatorResponseConsumer {
@@ -16,7 +15,7 @@ public class ValidatorResponseConsumer {
         this.paymentService = paymentService;
     }
     
-    @SqsListener("processed-payment")
+    @RabbitListener(queues="${rabbitmq.consumer.queuename}")
     public void listen(ValidatorResponse response) {
         paymentService.updatePaymentByValidatorResponse(response);
     }
